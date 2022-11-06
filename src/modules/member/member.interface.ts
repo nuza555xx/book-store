@@ -8,3 +8,10 @@ export interface IMember {
     point?: number;
     role: Role;
 }
+export interface MemberResponse {
+    id: string;
+    username: string;
+    displayName: string;
+    point?: number;
+    role: Role;
+}

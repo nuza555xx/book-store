@@ -1,8 +1,8 @@
-import { Auth, Authorizer, BearerAuth } from '@commons/decorators';
+import { Auth, Authorizer, BearerAuth } from '../commons/decorators';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BookService, ContentResponse, GetContentQuery } from '@services/book';
-import { LoginDto, MemberService, RegisterDto } from '@services/member';
+import { LoginDto, MemberResponse, MemberService, RegisterDto } from '@services/member';
 
 @Controller({ path: 'members' })
 @ApiTags('Member')
@@ -17,6 +17,13 @@ export class MemberController {
     @Post('register')
     async register(@Body() dto: RegisterDto): Promise<{ accessToken: string }> {
         return this.member.register(dto);
+    }
+
+    @Get('')
+    @BearerAuth()
+    async me(@Auth() authorizer: Authorizer): Promise<MemberResponse> {
+        authorizer.requestAccessForMember();
+        return this.member.me(authorizer.user.id);
     }
 
     @ApiQuery({ name: 'search', type: String, required: false })

@@ -1,15 +1,15 @@
-import { IJWTConfig } from '@commons/interfaces';
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BookException } from '../../commons/exceptions';
 import { ConfigService } from '@nestjs/config';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { IJWTConfig } from '../../commons/interfaces';
+import { IMember, MemberResponse } from './member.interface';
+import { IndexPath } from '../../commons/enums';
 import { JwtService } from '@nestjs/jwt';
-import { MemberService } from './member.abstract';
 import { LoginDto, RegisterDto } from './member.dto';
-import { IMember } from './member.interface';
-import * as bcrypt from 'bcrypt';
+import { MemberService } from './member.abstract';
 import { v4 } from 'uuid';
-import { IndexPath } from '@commons/enums';
-import { BookException } from '@commons/exceptions';
+import * as bcrypt from 'bcrypt';
 
 const saltOrRounds = 10;
 
@@ -105,6 +105,33 @@ export class MemberServiceImpl implements MemberService {
                 throw new BookException(HttpStatus.BAD_REQUEST, 'Password does not match');
 
             return this._generateToken(payload._source);
+        } catch (error) {
+            this.logger.error(JSON.stringify(error));
+
+            if (error.statusCode !== 404) throw error;
+        }
+    }
+
+    async me(userId: string): Promise<MemberResponse> {
+        try {
+            const {
+                hits: { hits: memberHits },
+            } = await this.elasticsearch.search<IMember>({
+                index: IndexPath.Member,
+                query: { bool: { must: [{ match: { id: userId } }] } },
+            });
+
+            const [{ _source: payload }] = memberHits;
+
+            if (!payload) throw new BookException(HttpStatus.NOT_FOUND, 'User not found');
+
+            return {
+                id: payload.id,
+                username: payload.username,
+                displayName: payload.displayName,
+                point: payload.point,
+                role: payload.role,
+            };
         } catch (error) {
             this.logger.error(JSON.stringify(error));
 

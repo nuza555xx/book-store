@@ -5,8 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { appConfig } from './configs';
 import { AppModule } from './app.module';
-import { IAppConfig } from '@commons/interfaces';
-import { BookExceptionFilter } from '@commons/exceptions';
+import { IAppConfig } from './commons/interfaces';
+import { BookExceptionFilter } from './commons/exceptions';
 
 async function bootstrap(): Promise<void> {
     const config: IAppConfig = appConfig();
