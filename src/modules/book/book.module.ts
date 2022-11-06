@@ -1,4 +1,4 @@
-import { BookElasticModule, BookRedisModule } from '@commons/modules';
+import { BookElasticModule, BookRedisModule } from '../../commons/modules';
 import { Module } from '@nestjs/common';
 import { BookService } from './book.abstract';
 import { BookServiceImpl } from './book.implement';

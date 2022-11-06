@@ -1,5 +1,5 @@
-import { IndexPath } from '@commons/enums';
-import { BookException } from '@commons/exceptions';
+import { IndexPath } from '../../commons/enums';
+import { BookException } from '../../commons/exceptions';
 
 import {
     ContentResponse,
@@ -16,7 +16,6 @@ import {
     SettingPointDto,
 } from './book.dto';
 
-import { QueryDslQueryContainer, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 import { CACHE_MANAGER, HttpStatus, Inject, Injectable } from '@nestjs/common';
 
 import { ElasticsearchService } from '@nestjs/elasticsearch';
@@ -27,6 +26,7 @@ import { v4 } from 'uuid';
 import { Cache } from 'cache-manager';
 import { uniqBy } from 'lodash';
 import { IMember } from '../member';
+import { QueryDslQueryContainer, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 
 @Injectable()
 export class BookServiceImpl implements BookService {
@@ -130,8 +130,6 @@ export class BookServiceImpl implements BookService {
 
         const aggregate = this._aggregateContent(query);
 
-        if (contentIds.length) aggregate.query.bool.filter = { ids: { values: contentIds } };
-
         const { hits: contentHits } = await this.elasticsearch.search<IContent>(aggregate);
 
         const contents = contentHits.hits
@@ -158,6 +156,19 @@ export class BookServiceImpl implements BookService {
         const flat = [contentId ?? [], dto.contentId].flatMap((id) => id);
 
         const unique = uniqBy(flat, 2);
+
+        const { hits: transactionHits } = await this.elasticsearch.search<ITransaction>({
+            index: IndexPath.Transaction,
+            query: {
+                bool: { must: { match: { userId } } },
+            },
+        });
+
+        const contentIds = transactionHits.hits.flatMap(({ _source }) => _source.contentId);
+
+        if (contentIds.some((id) => unique.includes(id)))
+            throw new BookException(HttpStatus.BAD_REQUEST, 'Content is already owner.');
+
         await this.cache.set(cacheKey, JSON.stringify({ contentId: unique }));
     }
 

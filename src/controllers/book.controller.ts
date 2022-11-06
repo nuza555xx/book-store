@@ -8,10 +8,10 @@ import {
     SettingPointDto,
 } from '@services/book';
 import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
-import { Auth, Authorizer, BearerAuth } from '@commons/decorators';
+import { Auth, Authorizer, BearerAuth } from '../commons/decorators';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
-@Controller({ path: 'contents' })
+@Controller({ path: 'books' })
 @ApiTags('Book')
 export class BookController {
     constructor(private book: BookService) {}
@@ -24,7 +24,7 @@ export class BookController {
     }
 
     @BearerAuth()
-    @Post('settingPoint')
+    @Post('setting-point')
     async createPointSetting(
         @Auth() authorizer: Authorizer,
         @Body() dto: SettingPointDto,
@@ -34,7 +34,7 @@ export class BookController {
     }
 
     @BearerAuth()
-    @Put('settingPoint')
+    @Put('setting-point')
     async updatePointSetting(
         @Auth() authorizer: Authorizer,
         @Body() dto: SettingPointDto,

@@ -26,10 +26,10 @@ export class AuthGuard implements CanActivate {
         if (!token)
             throw new HttpException(
                 {
-                    status: HttpStatus.FORBIDDEN,
-                    error: 'Missing authorization header',
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: 'Missing authorization header',
                 },
-                HttpStatus.FORBIDDEN,
+                HttpStatus.UNAUTHORIZED,
             );
         try {
             const payload = this.verifyToken(token);
@@ -40,10 +40,10 @@ export class AuthGuard implements CanActivate {
             this.logger.error(err);
             throw new HttpException(
                 {
-                    status: HttpStatus.FORBIDDEN,
-                    error: 'Invalid token or expired',
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: 'Invalid token or expired',
                 },
-                HttpStatus.FORBIDDEN,
+                HttpStatus.UNAUTHORIZED,
             );
         }
     }

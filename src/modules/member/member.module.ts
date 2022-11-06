@@ -1,4 +1,4 @@
-import { BookElasticModule, BookJWTTokenModule, BookRedisModule } from '@commons/modules';
+import { BookElasticModule, BookJWTTokenModule, BookRedisModule } from '../../commons/modules';
 import { Module } from '@nestjs/common';
 import { MemberService } from './member.abstract';
 import { MemberServiceImpl } from './member.implement';

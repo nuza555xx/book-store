@@ -6,26 +6,26 @@ export class Authorizer {
     constructor(public user: ITokenPayload) {}
 
     requestAccessForAdmin(): undefined {
-        if (this.user.role === Role.ADMIN) return;
+        if (this.user?.role === Role.ADMIN) return;
 
         throw new HttpException(
             {
-                status: HttpStatus.BAD_REQUEST,
-                error: 'Forbidden',
+                statusCode: HttpStatus.FORBIDDEN,
+                message: 'Forbidden',
             },
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.FORBIDDEN,
         );
     }
 
     requestAccessForMember(): undefined {
-        if (this.user.role === Role.MEMBER) return;
+        if (this.user?.role === Role.MEMBER) return;
 
         throw new HttpException(
             {
-                status: HttpStatus.BAD_REQUEST,
-                error: 'Forbidden',
+                statusCode: HttpStatus.FORBIDDEN,
+                message: 'Forbidden',
             },
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.FORBIDDEN,
         );
     }
 }

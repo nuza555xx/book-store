@@ -53,10 +53,7 @@ jobs:
         include:
           - topic: Unit
             args: npm run test
-            key: database
-          - topic: E2E
-            args: npm run e2e
-            key: e2e
+            key: unit
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3

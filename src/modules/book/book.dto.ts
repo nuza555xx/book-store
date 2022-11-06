@@ -74,7 +74,7 @@ export class SelectContentDto {
     @ArrayNotEmpty()
     @IsUUID('all', { each: true })
     @ArrayMinSize(1)
-    contentId: string;
+    contentId: string[];
 }
 
 export class CheckoutDto {
