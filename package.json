@@ -46,6 +46,7 @@
         "uuid": "^9.0.0"
     },
     "devDependencies": {
+        "@compodoc/compodoc": "^1.1.19",
         "@elastic/elasticsearch-mock": "^2.0.0",
         "@nestjs/cli": "^9.0.0",
         "@nestjs/schematics": "^9.0.0",
