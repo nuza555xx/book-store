@@ -39,6 +39,7 @@
         "cache-manager-redis-store": "^2.0.0",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.13.2",
+        "lint-staged": "^13.0.3",
         "lodash": "^4.17.21",
         "reflect-metadata": "^0.1.13",
         "rimraf": "^3.0.2",
@@ -95,6 +96,13 @@
         "moduleNameMapper": {
             "^@/(.*)$": "<rootDir>/../src/$1",
             "^@services/(.*)$": "<rootDir>/../src/modules/$1"
+        }
+    },
+    "lint-staged": {
+        "linters": {
+            "*.ts": [
+                "compodoc --coverageMinimumPerFile 25"
+            ]
         }
     }
 }
