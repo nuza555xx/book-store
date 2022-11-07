@@ -17,9 +17,10 @@ import { testCheckout } from './book/checkout.e2e.spec';
 
 describe('E2E Tests', () => {
     let application: INestApplication;
+    let moduleRef: TestingModule;
 
     beforeAll(async () => {
-        const moduleRef: TestingModule = await Test.createTestingModule({
+        moduleRef = await Test.createTestingModule({
             imports: [AppModule, BookConfigModule, BookModule, MemberModule, BookJWTTokenModule],
         }).compile();
 
@@ -38,6 +39,10 @@ describe('E2E Tests', () => {
         await application.getHttpAdapter().getInstance().ready();
 
         global.__APP__ = application;
+    });
+
+    afterAll(async () => {
+        await moduleRef.close();
     });
 
     testLogin();
