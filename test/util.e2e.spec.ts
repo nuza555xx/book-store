@@ -6,14 +6,18 @@ export const app = (): NestFastifyApplication => global.__APP__;
 export const request = () => supertest(global.__APP__.getHttpServer());
 
 export const registerUser = async (role: Role, name = Date.now().toString()) => {
-    const { body: accessToken } = await request().post('/api/members/register').set({}).send({
-        username: name,
-        displayName: name,
-        password: '12345678',
-        role: role,
-    });
+    try {
+        const { body: accessToken } = await request().post('/api/members/register').set({}).send({
+            username: name,
+            displayName: name,
+            password: '12345678',
+            role: role,
+        });
 
-    return accessToken;
+        return accessToken;
+    } catch (error) {
+        return;
+    }
 };
 
 export const loginUser = async (username = Date.now().toString()) => {

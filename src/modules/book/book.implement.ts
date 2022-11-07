@@ -166,7 +166,7 @@ export class BookServiceImpl implements BookService {
 
         const contentIds = transactionHits.hits.flatMap(({ _source }) => _source.contentId);
 
-        if (contentIds.some((id) => unique.includes(id)))
+        if (unique.some((id) => contentIds.includes(id)))
             throw new BookException(HttpStatus.BAD_REQUEST, 'Content is already owner.');
 
         await this.cache.set(cacheKey, JSON.stringify({ contentId: unique }));
@@ -257,7 +257,9 @@ export class BookServiceImpl implements BookService {
             query: { match_all: {} },
         });
 
-        const [{ _source: sourceSetting }] = settingHits.hits;
+        const [hits] = settingHits.hits;
+
+        const sourceSetting = hits?._source;
 
         if (dto.method === PaymentMethod.Point) {
             if (sourceSetting?.enabled === PointEnabled.ACTIVE) {
@@ -277,7 +279,7 @@ export class BookServiceImpl implements BookService {
                 throw new BookException(HttpStatus.BAD_REQUEST, 'No enabled point redeem');
             }
         } else {
-            const addPoint = sourceSetting.enabled ? balance * sourceSetting.oneTo : balance;
+            const addPoint = sourceSetting?.enabled ? balance * sourceSetting.oneTo ?? 0 : 0;
             await this.elasticsearch.update({
                 index: IndexPath.Member,
                 id: userId,
@@ -305,7 +307,7 @@ export class BookServiceImpl implements BookService {
 
         const aggregate = this._aggregateContent(query);
 
-        if (contentIds.length) aggregate.query.bool.filter = { ids: { values: contentIds } };
+        aggregate.query.bool.filter = { ids: { values: contentIds } };
 
         const { hits: contentHits } = await this.elasticsearch.search<IContent>(aggregate);
 

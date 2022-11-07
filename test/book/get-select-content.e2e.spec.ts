@@ -54,10 +54,10 @@ export const testGetSelectContentList = () => {
             });
 
             it('should return list book is correct', async () => {
-                const { accessToken } = await loginUser('select-content');
+                const { accessToken } = await loginUser('member');
                 await request()
                     .get('/api/books/select-content')
-                    .query({ page: '1', size: 1 })
+                    .query({ page: 1, size: 1 })
                     .auth(accessToken, { type: 'bearer' })
                     .set({})
                     .expect(({ body }) => {
@@ -67,7 +67,8 @@ export const testGetSelectContentList = () => {
                         expect(body.count).toEqual(1);
                         expect(body.total).toEqual(1);
                         expect(payload.description).toEqual('example');
-                        expect(payload.price).toEqual(100);
+                        expect(payload.price).toBeGreaterThan(0);
+
                     })
                     .expect(200);
             });
