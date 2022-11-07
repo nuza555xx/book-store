@@ -1,6 +1,6 @@
 import { Visibility } from '@services/book';
 import { Role } from '@services/member';
-import { registerUser, request } from '../util.e2e.spec';
+import { delay, registerUser, request } from '../util.e2e.spec';
 
 export const testGetContentList = () => {
     describe('#GetContentList', () => {
@@ -71,6 +71,8 @@ export const testGetContentList = () => {
                         visibility: Visibility.PUBLISH,
                     })
                     .expect(201);
+
+                await delay(1000);
 
                 await request()
                     .get('/api/books/list')

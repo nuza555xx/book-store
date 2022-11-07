@@ -45,8 +45,8 @@ describe('E2E Tests', () => {
         await moduleRef.close();
     });
 
-    testLogin();
     testRegister();
+    testLogin();
     testCreateSetting();
     testUpdateSetting();
     testCreateContent();

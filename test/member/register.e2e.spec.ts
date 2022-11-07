@@ -33,7 +33,7 @@ export const testRegister = () => {
                         username: `e2e${Date.now().toString()}`,
                         displayName: 'e2e e2e',
                         password: '12345678',
-                        role: Role.MEMBER,
+                        role: Role.ADMIN,
                     })
                     .expect(({ body }) => {
                         expect(isJWT(body.accessToken)).toEqual(true);

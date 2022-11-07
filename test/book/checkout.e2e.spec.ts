@@ -1,6 +1,6 @@
 import { PaymentMethod, Visibility } from '@services/book';
 import { Role } from '@services/member';
-import { registerUser, request } from '../util.e2e.spec';
+import { loginUser, registerUser, request } from '../util.e2e.spec';
 
 export const testCheckout = () => {
     describe('#Checkout', () => {
@@ -28,6 +28,17 @@ export const testCheckout = () => {
                         expect(body.message).toEqual('Forbidden');
                     })
                     .expect(403);
+            });
+
+            it('should create when checkout cart', async () => {
+                const { accessToken } = await loginUser(global.__MEMBER__);
+
+                await request()
+                    .post('/api/books/checkout')
+                    .auth(accessToken, { type: 'bearer' })
+                    .set({})
+                    .send({ method: PaymentMethod.Credit })
+                    .expect(201);
             });
         });
     });

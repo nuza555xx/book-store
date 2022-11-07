@@ -5,6 +5,10 @@ import supertest from 'supertest';
 export const app = (): NestFastifyApplication => global.__APP__;
 export const request = () => supertest(global.__APP__.getHttpServer());
 
+export const delay = async (due: number): Promise<void> => {
+    return new Promise((r) => setTimeout(r, due));
+};
+
 export const registerUser = async (role: Role, name = Date.now().toString()) => {
     try {
         const { body: accessToken } = await request().post('/api/members/register').set({}).send({
