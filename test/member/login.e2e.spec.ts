@@ -1,6 +1,6 @@
 import { Role } from '@services/member';
 import { isJWT } from 'class-validator';
-import { request } from '../util.e2e.spec';
+import { registerUser, request } from '../util.e2e.spec';
 
 export const testLogin = () => {
     describe('#Login', () => {
@@ -26,10 +26,9 @@ export const testLogin = () => {
                     .post('/api/members/login')
                     .set({})
                     .send({
-                        username: `e2e`,
-                        displayName: 'e2e e2e',
+                        username: `admin`,
                         password: '12345678',
-                        role: Role.MEMBER,
+                        role: Role.ADMIN,
                     })
                     .expect(({ body }) => {
                         expect(isJWT(body.accessToken)).toEqual(true);
