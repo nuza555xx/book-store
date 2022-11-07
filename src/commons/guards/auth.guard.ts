@@ -17,8 +17,9 @@ type AuthRequest = FastifyRequest & {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService, private configService: ConfigService) {}
     private readonly logger = new Logger(AuthGuard.name);
+
+    constructor(private jwtService: JwtService, private configService: ConfigService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<AuthRequest>();

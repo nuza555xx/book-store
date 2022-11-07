@@ -80,9 +80,6 @@
             "json",
             "ts"
         ],
-        "eslintIgnore": [
-            "*.spec.ts"
-        ],
         "rootDir": "src",
         "testRegex": ".*\\.spec\\.ts$",
         "transform": {
