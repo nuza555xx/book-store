@@ -15,3 +15,7 @@ export interface MemberResponse {
     point?: number;
     role: Role;
 }
+
+export interface AccessTokenResponse {
+    accessToken: string;
+}

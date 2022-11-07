@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { IJWTConfig } from '../../commons/interfaces';
-import { IMember, MemberResponse } from './member.interface';
+import { AccessTokenResponse, IMember, MemberResponse } from './member.interface';
 import { IndexPath } from '../../commons/enums';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto, RegisterDto } from './member.dto';
@@ -15,15 +15,15 @@ const saltOrRounds = 10;
 
 @Injectable()
 export class MemberServiceImpl implements MemberService {
+    private readonly logger = new Logger(MemberService.name);
+
     constructor(
         private readonly elasticsearch: ElasticsearchService,
         private readonly jwt: JwtService,
         private readonly config: ConfigService,
     ) {}
 
-    private readonly logger = new Logger(MemberService.name);
-
-    private _generateToken(payload: IMember): { accessToken: string } {
+    private _generateToken(payload: IMember): AccessTokenResponse {
         const { jwtSecret, accessTokenExpiration } = this.config.get<IJWTConfig>('jwt');
 
         const token = this.jwt.sign(
@@ -39,7 +39,7 @@ export class MemberServiceImpl implements MemberService {
         password,
         role,
         displayName,
-    }: RegisterDto): Promise<{ accessToken: string }> {
+    }: RegisterDto): Promise<AccessTokenResponse> {
         const hashPassword = await bcrypt.hash(password, saltOrRounds);
         const uuid = v4();
         const prepare = {
@@ -86,7 +86,7 @@ export class MemberServiceImpl implements MemberService {
         return this._generateToken(prepare);
     }
 
-    async login({ username, password }: LoginDto): Promise<{ accessToken: string }> {
+    async login({ username, password }: LoginDto): Promise<AccessTokenResponse> {
         try {
             const {
                 hits: { hits: memberHits },
